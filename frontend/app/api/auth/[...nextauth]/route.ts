@@ -33,24 +33,38 @@ const authOptions: NextAuthOptions = {
                                 process.env.VITE_NEON_AUTH_URL || 
                                 "https://ep-mute-wave-aotwr8ra.neonauth.c-2.ap-southeast-1.aws.neon.tech/neondb/auth";
 
+            console.log("[Auth-Sync] Initiating Neon Auth session verification:", { email, neonAuthUrl });
+
             // Verify with Neon Auth server
             const neonRes = await fetch(`${neonAuthUrl}/get-session`, {
               headers: {
                 "Authorization": `Bearer ${sessionToken}`,
-                "Cookie": `__Secure-neonauth.session_token=${sessionToken}; better-auth.session-token=${sessionToken};`
+                "Cookie": `__Secure-neonauth.session_token=${sessionToken}; better-auth.session-token=${sessionToken}; __Secure-better-auth.session-token=${sessionToken};`
               }
             });
 
             if (!neonRes.ok) {
-              throw new Error("Verification with Neon Auth server failed.");
+              const errorText = await neonRes.text().catch(() => "N/A");
+              console.error("[Auth-Sync] Neon Auth server responded with non-OK status:", {
+                status: neonRes.status,
+                response: errorText
+              });
+              throw new Error(`Verification with Neon Auth server failed (Status: ${neonRes.status}).`);
             }
 
             const neonSession = await neonRes.json();
+            console.log("[Auth-Sync] Neon session retrieved successfully:", neonSession);
+
             if (!neonSession?.user || neonSession.user.email !== email) {
+              console.error("[Auth-Sync] Session user mismatch or invalid:", {
+                sessionUser: neonSession?.user,
+                expectedEmail: email
+              });
               throw new Error("Session mismatch or invalid credentials.");
             }
 
             // Sync user to FastAPI DB
+            console.log("[Auth-Sync] Syncing user to FastAPI backend:", { BACKEND_URL, email });
             const backendRes = await fetch(`${BACKEND_URL}/api/auth/oauth-sync`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -61,16 +75,22 @@ const authOptions: NextAuthOptions = {
             });
 
             if (!backendRes.ok) {
-              const err = await backendRes.json().catch(() => ({ detail: "OAuth synchronization failed" }));
-              throw new Error(err.detail || "FastAPI backend sync failed.");
+              const errorText = await backendRes.text().catch(() => "N/A");
+              console.error("[Auth-Sync] FastAPI backend sync returned error:", {
+                status: backendRes.status,
+                response: errorText
+              });
+              throw new Error("FastAPI backend sync failed.");
             }
 
             const user = await backendRes.json();
+            console.log("[Auth-Sync] User successfully synced:", user);
             if (user && user.id) {
               return user;
             }
             return null;
           } catch (error: any) {
+            console.error("[Auth-Sync] Exception during credentials authorization:", error);
             throw new Error(error.message || "Failed to verify Neon Auth session.");
           }
         }
