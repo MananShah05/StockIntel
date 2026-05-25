@@ -289,46 +289,66 @@ def score_regime_layer(macro: Optional[Dict[str, Any]]) -> float:
 
 def score_risk_layer(ti: Optional[Dict[str, Any]], f: Optional[Dict[str, Any]], articles: List[Dict[str, Any]], sentiment_score: float) -> Tuple[float, List[str]]:
     """
-    Aggregates volatility indicators, high leverage ratios, and negative news streams into a 0 to 1 risk score.
+    Computes risk score using the formula:
+    risk_penalty = beta * 15 + volatility * 25 + debt_ratio * 20 - profitability * 10
+    Maps to 0 to 1 scale, clamped with 0.1 floor.
     """
     risk_factors = []
-    risk_accum = 0.0
     
-    # 1. Financial Leverage Risk
-    if f:
-        de = f.get("debt_to_equity")
-        if de:
-            de_ratio = de / 100.0 if de > 5 else de
-            if de_ratio > 2.5:
-                risk_accum += 0.3
-                risk_factors.append(f"Extremely high leverage ratio (Debt/Equity: {de_ratio:.2f})")
-                
-    # 2. Extreme Volatility Risk (using ATR)
+    # 1. Beta Input
+    beta = 1.0
+    if f and f.get("beta") is not None:
+        beta = f.get("beta")
+        
+    # 2. Volatility Input (Relative ATR)
+    volatility = 0.03
     if ti:
         atr = ti.get("atr_14")
         ma20 = ti.get("ma_20")
         if atr and ma20 and ma20 > 0:
-            rel_atr = atr / ma20
-            if rel_atr > 0.06:  # ATR exceeds 6% of baseline stock price
-                risk_accum += 0.35
-                risk_factors.append("Extreme relative daily trading volatility (high ATR)")
-            elif rel_atr > 0.035:
-                risk_accum += 0.15
-                
-    # 3. High Bearish Sentiment Risk
-    if sentiment_score < 0.35:
-        risk_accum += 0.3
-        risk_factors.append("Substantial negative news stream & investor panic")
-        
-    # 4. Bearish chart alignment
-    if ti and ti.get("ma_200") and ti.get("ma_50"):
-        if ti["ma_50"] < ti["ma_200"]:
-            risk_accum += 0.15
-            risk_factors.append("Chart pattern exhibits bearish alignment (50MA below 200MA)")
-            
-    risk_score = min(1.0, risk_accum)
+            volatility = atr / ma20
+
+    # 3. Debt Ratio Input
+    debt_ratio = 0.5
+    if f:
+        de = f.get("debt_to_equity")
+        if de is not None:
+            debt_ratio = de / 100.0 if de > 5 else de
+
+    # 4. Profitability Input (ROE)
+    profitability = 0.10
+    if f:
+        roe = f.get("roe")
+        if roe is not None:
+            profitability = roe / 100.0 if roe > 1.0 else roe
+
+    # Calculate raw penalty score
+    risk_penalty = (
+        beta * 15.0 +
+        volatility * 25.0 +
+        debt_ratio * 20.0 -
+        profitability * 10.0
+    )
+    
+    # Map from [0, 100] scale to [0, 1] range
+    risk_score = max(0.0, min(1.0, risk_penalty / 100.0))
     if risk_score < 0.1:
         risk_score = 0.1  # baseline minimal operational risk
+        
+    # Populate explanation factors
+    if beta > 1.5:
+        risk_factors.append(f"High beta sensitivity ({beta:.2f})")
+    if volatility > 0.04:
+        risk_factors.append(f"Elevated relative daily volatility (ATR ratio: {volatility*100:.1f}%)")
+    if debt_ratio > 2.0:
+        risk_factors.append(f"High balance sheet leverage ratio ({debt_ratio:.2f})")
+    if profitability < 0.0:
+        risk_factors.append(f"Unprofitable return on equity (ROE: {profitability*100:.1f}%)")
+    if sentiment_score < 0.35:
+        risk_factors.append("Bearish news sentiment pressure")
+        
+    if not risk_factors:
+        risk_factors.append("Stable risk profile metrics")
         
     return round(risk_score, 3), risk_factors
 

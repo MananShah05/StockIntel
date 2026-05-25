@@ -54,6 +54,44 @@ export function Navbar() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 text-[var(--teal-500)] animate-pulse"
+          >
+            <path
+              d="M12 2L2 7L12 12L22 7L12 2Z"
+              fill="url(#logo-gradient-nav)"
+            />
+            <path
+              d="M2 17L12 22L22 17"
+              stroke="url(#logo-gradient-nav)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M2 12L12 17L22 12"
+              stroke="url(#logo-gradient-nav)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <defs>
+              <linearGradient
+                id="logo-gradient-nav"
+                x1="2"
+                y1="2"
+                x2="22"
+                y2="22"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="#2BC8B7" />
+                <stop offset="1" stopColor="#9B99FE" />
+              </linearGradient>
+            </defs>
+          </svg>
           <span
             style={{
               fontFamily: 'var(--font-display)',

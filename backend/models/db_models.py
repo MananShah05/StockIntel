@@ -76,6 +76,7 @@ class Fundamental(Base):
     free_cash_flow: Mapped[Optional[int]] = mapped_column(BigInteger)
     roe: Mapped[Optional[float]] = mapped_column(Numeric(10, 4))
     profit_margin: Mapped[Optional[float]] = mapped_column(Numeric(10, 4))
+    beta: Mapped[Optional[float]] = mapped_column(Numeric(6, 3))
     fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
 
     # Relationships

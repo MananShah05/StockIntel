@@ -129,6 +129,7 @@ async def run_single_stock_pipeline(db: AsyncSession, ticker: str, force_mock: b
             "free_cash_flow": fund_obj.free_cash_flow,
             "roe": float(fund_obj.roe) if fund_obj.roe is not None else None,
             "profit_margin": float(fund_obj.profit_margin) if fund_obj.profit_margin is not None else None,
+            "beta": float(fund_obj.beta) if fund_obj.beta is not None else None,
         }
         
     # Ingested news/reddit/SEC articles in the last 7 days

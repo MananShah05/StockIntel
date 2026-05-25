@@ -39,6 +39,12 @@ FALLBACK_STOCK_METADATA = {
     "VIX": {"company_name": "CBOE Volatility Index", "sector": "Index", "industry": "Market Volatility Index"},
 }
 
+BETA_FALLBACKS = {
+    "AAPL": 1.20, "MSFT": 1.10, "NVDA": 1.68, "GOOGL": 1.05, "AMZN": 1.15,
+    "TSLA": 2.05, "META": 1.22, "JPM": 1.08, "AMD": 1.62, "NFLX": 1.25,
+    "PLTR": 1.45, "SOFI": 1.65, "SPY": 1.00, "QQQ": 1.18, "VIX": -0.70
+}
+
 
 def _yfinance_symbol(ticker: str) -> str:
     return YFINANCE_SYMBOLS.get(ticker, ticker)
@@ -111,6 +117,7 @@ def generate_mock_fundamentals(ticker: str) -> dict:
         "free_cash_flow": random.randint(2, 50) * 1000000000,
         "roe": roe_vals.get(ticker, 14.0) / 100.0,
         "profit_margin": roe_vals.get(ticker, 14.0) / 200.0,
+        "beta": BETA_FALLBACKS.get(ticker, 1.00),
     }
 
 async def ingest_price_data(db: AsyncSession, ticker: str, days: int = 90, force_mock: bool = False):
@@ -213,6 +220,7 @@ async def ingest_fundamentals(db: AsyncSession, ticker: str, force_mock: bool = 
                     "free_cash_flow": info.get("freeCashflow"),
                     "roe": info.get("returnOnEquity"),
                     "profit_margin": info.get("profitMargins"),
+                    "beta": info.get("beta") if info.get("beta") is not None else BETA_FALLBACKS.get(ticker, 1.00),
                 }
                 logger.info(f"Successfully scraped fundamental snapshot from yfinance for {ticker}")
             else:
