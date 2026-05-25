@@ -34,7 +34,8 @@ const authOptions: NextAuthOptions = {
             // Verify with Neon Auth server
             const neonRes = await fetch(`${neonAuthUrl}/get-session`, {
               headers: {
-                "Authorization": `Bearer ${sessionToken}`
+                "Authorization": `Bearer ${sessionToken}`,
+                "Cookie": `__Secure-neonauth.session_token=${sessionToken}; better-auth.session-token=${sessionToken};`
               }
             });
 
@@ -131,5 +132,15 @@ const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || "stockintel_super_secret_session_encryption_key_99182",
 };
 
-const handler = NextAuth(authOptions);
+const handler = (req: any, res: any) => {
+  const protocol = req.headers.get("x-forwarded-proto") || "https";
+  const host = req.headers.get("host");
+
+  if (host) {
+    process.env.NEXTAUTH_URL = `${protocol}://${host}`;
+  }
+
+  return NextAuth(req, res, authOptions);
+};
+
 export { handler as GET, handler as POST };
