@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { cn } from '@/lib/utils'
 import Particles from '@/components/ui/Particles'
+import { ThemeToggle } from '@/components/shared/ThemeToggle'
 
 export function Typewriter({ words, delay = 120, period = 2000 }: { words: string[], delay?: number, period?: number }) {
     const [index, setIndex] = useState(0)
@@ -393,7 +394,7 @@ const HeroHeader = () => {
                                     ))}
                                 </ul>
                             </div>
-                            <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                            <div className="flex w-full flex-col space-y-3 sm:flex-row sm:items-center sm:gap-3 sm:space-y-0 md:w-fit">
                                 <Button
                                     asChild
                                     variant="outline"
@@ -419,6 +420,7 @@ const HeroHeader = () => {
                                         <span>Get Started</span>
                                     </Link>
                                 </Button>
+                                <ThemeToggle />
                             </div>
                         </div>
                     </div>
@@ -469,7 +471,7 @@ const Logo = ({ className }: { className?: string }) => {
                 </defs>
             </svg>
             <span 
-                className="font-display font-black tracking-tight text-lg text-white"
+                className="font-display font-black tracking-tight text-lg text-[var(--text-primary)]"
                 style={{
                   fontFamily: 'var(--font-display)',
                   fontWeight: 900,
