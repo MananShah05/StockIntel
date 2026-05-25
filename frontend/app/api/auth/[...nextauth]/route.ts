@@ -39,7 +39,7 @@ const authOptions: NextAuthOptions = {
             const neonRes = await fetch(`${neonAuthUrl}/get-session`, {
               headers: {
                 "Authorization": `Bearer ${sessionToken}`,
-                "Cookie": `__Secure-neonauth.session_token=${sessionToken}; better-auth.session-token=${sessionToken}; __Secure-better-auth.session-token=${sessionToken};`
+                "Cookie": `__Secure-neonauth.session_token=${sessionToken}; better-auth.session-token=${sessionToken}; __Secure-better-auth.session-token=${sessionToken}; better-auth.session_token=${sessionToken}; __Secure-better-auth.session_token=${sessionToken};`
               }
             });
 
