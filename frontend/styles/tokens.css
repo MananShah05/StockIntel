@@ -1,0 +1,115 @@
+/* ─── LIGHT MODE (default) ─── */
+:root {
+  /* Base surfaces — warm ivory, not pure white */
+  --bg-base:        oklch(98.5% 0.006 75);
+  --bg-surface:     oklch(97.0% 0.008 75);
+  --bg-elevated:    oklch(99.5% 0.004 75);
+  --bg-sunken:      oklch(95.5% 0.010 80);
+  --bg-card:        var(--bg-surface);
+  --bg-overlay:     oklch(20% 0.015 75 / 0.45);
+
+  /* Borders */
+  --border-soft:    oklch(88% 0.012 75);
+  --border-medium:  oklch(82% 0.016 75);
+  --border-strong:  oklch(72% 0.020 70);
+
+  /* Text */
+  --text-primary:   oklch(18% 0.018 70);
+  --text-secondary: oklch(42% 0.020 72);
+  --text-tertiary:  oklch(60% 0.016 74);
+  --text-disabled:  oklch(72% 0.012 75);
+
+  /* Accent: Amber (positive / bullish / buy) */
+  --amber-50:       oklch(97% 0.030 85);
+  --amber-100:      oklch(93% 0.060 82);
+  --amber-200:      oklch(88% 0.090 80);
+  --amber-400:      oklch(76% 0.140 72);
+  --amber-500:      oklch(68% 0.160 68);
+  --amber-600:      oklch(58% 0.155 65);
+  --amber-700:      oklch(46% 0.140 62);
+  --amber-900:      oklch(28% 0.100 60);
+
+  /* Accent: Teal (neutral / signals / charts) */
+  --teal-50:        oklch(97% 0.025 190);
+  --teal-100:       oklch(92% 0.055 188);
+  --teal-200:       oklch(86% 0.090 186);
+  --teal-400:       oklch(72% 0.130 182);
+  --teal-500:       oklch(62% 0.145 180);
+  --teal-600:       oklch(50% 0.138 178);
+  --teal-700:       oklch(38% 0.120 176);
+  --teal-900:       oklch(22% 0.080 174);
+
+  /* Semantic */
+  --positive:       oklch(54% 0.155 145);
+  --negative:       oklch(52% 0.180 22);
+  --text-up:        var(--positive);
+  --text-down:      var(--negative);
+  --warning:        oklch(65% 0.160 65);
+  --neutral:        oklch(55% 0.080 200);
+
+  /* Chart palette (7 distinct, accessible) */
+  --chart-1: oklch(62% 0.145 180);
+  --chart-2: oklch(68% 0.160 68);
+  --chart-3: oklch(54% 0.155 145);
+  --chart-4: oklch(62% 0.180 300);
+  --chart-5: oklch(52% 0.180 22);
+  --chart-6: oklch(65% 0.140 250);
+  --chart-7: oklch(60% 0.120 100);
+
+  /* Motion */
+  --ease-out:     cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out:  cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer:  cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Shadows — tinted to bg hue */
+  --shadow-sm:   0 1px 3px oklch(18% 0.018 70 / 0.06),
+                 0 1px 2px oklch(18% 0.018 70 / 0.04);
+  --shadow-md:   0 4px 12px oklch(18% 0.018 70 / 0.08),
+                 0 2px 4px oklch(18% 0.018 70 / 0.04);
+  --shadow-lg:   0 16px 40px oklch(18% 0.018 70 / 0.10),
+                 0 4px 8px oklch(18% 0.018 70 / 0.05);
+
+  /* Typography */
+  --font-display: 'Cabinet Grotesk', 'Satoshi', 'Geist', sans-serif;
+  --font-body:    'Geist', 'DM Sans', system-ui, sans-serif;
+  --font-mono:    'Geist Mono', 'JetBrains Mono', monospace;
+
+  /* Radius */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+}
+
+/* ─── DARK MODE ─── */
+[data-theme="dark"] {
+  --bg-base:        oklch(20% 0.012 240);
+  --bg-surface:     oklch(23% 0.014 240);
+  --bg-elevated:    oklch(26% 0.016 240);
+  --bg-sunken:      oklch(17% 0.010 240);
+  --bg-card:        var(--bg-surface);
+  --bg-overlay:     oklch(12% 0.010 240 / 0.60);
+
+  --border-soft:    oklch(30% 0.016 240);
+  --border-medium:  oklch(36% 0.018 240);
+  --border-strong:  oklch(44% 0.020 238);
+
+  --text-primary:   oklch(92% 0.008 75);
+  --text-secondary: oklch(74% 0.012 72);
+  --text-tertiary:  oklch(56% 0.010 74);
+  --text-disabled:  oklch(40% 0.008 75);
+
+  /* Accents stay same hue, adjusted lightness */
+  --amber-500:      oklch(74% 0.150 68);
+  --teal-500:       oklch(68% 0.135 180);
+  --positive:       oklch(64% 0.150 145);
+  --negative:       oklch(62% 0.170 22);
+  --text-up:        var(--positive);
+  --text-down:      var(--negative);
+
+  --shadow-sm:   0 1px 3px oklch(8% 0.005 240 / 0.20);
+  --shadow-md:   0 4px 12px oklch(8% 0.005 240 / 0.30);
+  --shadow-lg:   0 16px 40px oklch(8% 0.005 240 / 0.40);
+}
