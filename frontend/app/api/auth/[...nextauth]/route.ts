@@ -1,7 +1,9 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const DEFAULT_BACKEND_URL = "http://127.0.0.1:8000";
+const DEFAULT_BACKEND_URL = process.env.NODE_ENV === "production" 
+  ? "https://stock-intel-backend.vercel.app" 
+  : "http://127.0.0.1:8000";
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || DEFAULT_BACKEND_URL;
 
 const authOptions: NextAuthOptions = {
