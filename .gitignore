@@ -45,6 +45,9 @@ next-env.d.ts
 
 # markdown
 *.md
+!README.md
+!**/README.md
+
 
 # temp and unnecessary files
 *.tmp
@@ -57,3 +60,7 @@ next-env.d.ts
 *.bak
 .eslintcache
 .cache/
+
+
+# Databases
+*.db
